@@ -2,17 +2,24 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"strings"
 
+	log "github.com/charmbracelet/log"
 	"github.com/jackpal/bencode-go"
 	"gopkg.in/yaml.v3"
 )
 
 func main() {
-	log.SetFlags(0)
 	if len(os.Args) < 2 {
-		log.Fatal("Usage: program <torrent-file>")
+		log.Fatal("Usage: program <torrent-file/torrent-url>")
+	}
+
+	if strings.Contains(os.Args[1], "http") {
+		log.Info("Trying to download the file")
+		if err := DownloadTorrentFileToTmp(os.Args[1], "somefilenametest"); err != nil {
+			log.Errorf("unable to download file : %s", err.Error())
+		}
 	}
 
 	file, err := os.Open(os.Args[1])
