@@ -1,5 +1,14 @@
 package main
 
+import "net"
+
+type PeerId [20]byte
+
+type QubeConfig struct {
+	PeerId PeerId `yaml:"peerId"`
+	Port   int    `yaml:"port"`
+}
+
 type MetainfoFile_File struct {
 	Path   string `bencode:"path" yaml:"path"`
 	Length int    `bencode:"length" yaml:"length"`
@@ -27,4 +36,28 @@ type MetainfoFile struct {
 	Comment      string     `bencode:"comment,omitempty" yaml:"comment,omitempty"`
 	CreatedBy    string     `bencode:"created by,omitempty" yaml:"createdBy,omitempty"`
 	Encoding     string     `bencode:"encoding,omitempty" yaml:"encoding,omitempty"`
+}
+
+type TorrentFile struct {
+	Announce   string     `yaml:"announce"`
+	InfoHash   [20]byte   `yaml:"infoHash"`
+	PiecesHash [][20]byte `yaml:"piecesHash"`
+	Length     int        `yaml:"length"`
+}
+
+type RawTrackerResponse struct {
+	Interval int    `bencode:"interval" yaml:"interval"`
+	Peers    string `bencode:"peers" yaml:"peers"`
+	Peers6   string `bencode:"peers6" yaml:"peers6"`
+}
+
+type TrackerResponse struct {
+	Interval int    `yaml:"interval"`
+	Peers    []Peer `yaml:"peers"`
+	Peers6   []Peer `yaml:"peers6"`
+}
+
+type Peer struct {
+	IP   net.IP `yaml:"ip"`
+	Port uint16 `yaml:"port"`
 }

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
 	log "github.com/charmbracelet/log"
-	"github.com/jackpal/bencode-go"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,15 +28,25 @@ func main() {
 	}
 	defer file.Close()
 
-	var torrentFile MetainfoFile
-	err = bencode.Unmarshal(file, &torrentFile)
+	torrent, err := readTorrentFile(file)
 	if err != nil {
-		log.Fatalf("Failed to decode: %v", err)
+		log.Fatalf("Failed to unmarshal torrent file: %v", err)
 	}
-	torrentYaml, err := yaml.Marshal(torrentFile)
+
+	qc, err := loadConfig("qubetorrent.yaml")
+	if err != nil {
+		log.Fatalf("Failed to load qubetorrent config: %v", err)
+	}
+
+	trackerResponse, err := torrent.requestPeers(qc.PeerId, uint16(qc.Port))
+	if err != nil {
+		log.Fatalf("Failed requesting peers: %v", err)
+	}
+
+	trackerYaml, err := yaml.Marshal(trackerResponse)
 	if err != nil {
 		log.Fatalf("Failed to encode yaml: %v", err)
 	}
 
-	fmt.Printf("%s", torrentYaml)
+	log.Printf("%s", trackerYaml)
 }
