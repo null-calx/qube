@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - object.api.qube.torrent
+  resources:
+  - torrents
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - object.api.qube.torrent
+  resources:
+  - torrents/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - object.api.qube.torrent
+  resources:
+  - torrents/status
+  verbs:
+  - get
+  - patch
+  - update

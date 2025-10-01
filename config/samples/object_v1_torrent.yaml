@@ -1,0 +1,9 @@
+apiVersion: object.api.qube.torrent/v1
+kind: Torrent
+metadata:
+  labels:
+    app.kubernetes.io/name: qube-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: torrent-sample
+spec:
+  # TODO(user): Add fields here
