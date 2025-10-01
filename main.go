@@ -1,19 +1,28 @@
 package main
 
 import (
-	"log"
 	"os"
+	"strings"
 
+	log "github.com/charmbracelet/log"
 	"gopkg.in/yaml.v3"
 )
 
 func main() {
-	log.SetFlags(0)
 	if len(os.Args) < 2 {
-		log.Fatal("Usage: program <torrent-file>")
+		log.Fatal("Usage: program <torrent-file/torrent-url>")
+	}
+	openFile := os.Args[1]
+
+	if strings.Contains(os.Args[1], "http") {
+		dpath, err := DownloadTorrentFileToTmp(os.Args[1])
+		if err != nil {
+			log.Errorf("unable to download file : %s", err.Error())
+		}
+		openFile = dpath
 	}
 
-	file, err := os.Open(os.Args[1])
+	file, err := os.Open(openFile)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
 	}
